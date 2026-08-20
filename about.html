@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - OneSkill Studio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ════════ COLOR SCHEME (Oracle-inspired) ════════ */
+    :root {
+      --primary: #003B66;           /* Deep Oracle Blue */
+      --primary-light: #E8F2F8;     /* Light Blue background */
+      --accent: #0091B8;            /* Oracle Teal */
+      --accent-light: #D0E8F2;      /* Light Teal */
+      --text-dark: #1A1A1A;         /* Dark text */
+      --text-muted: #666666;        /* Muted text */
+      --text-light: #999999;        /* Light text */
+      --border: #D5D5D5;            /* Border color */
+      --bg: #FFFFFF;                /* White background */
+      --bg-light: #F8F8F8;          /* Light gray background */
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* ════════ HEADER ════════ */
+    .site-header {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .site-header.hide {
+      transform: translateY(-100%);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--primary);
+    }
+
+    .nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    /* ════════ MAIN CONTAINER ════════ */
+    .site-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 24px;
+    }
+
+    /* ════════ HERO SECTION ════════ */
+    .about-hero {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+      border-radius: 12px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      border: 1px solid #D0E0F0;
+    }
+
+    .about-hero h1 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .about-hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ════════ AUTHOR CARD ════════ */
+    .author-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .author-avatar-large {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      font-weight: 800;
+    }
+
+    .author-card h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .author-title {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .author-bio {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .author-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-top: 0.5rem;
+    }
+
+    .author-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-btn:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 145, 184, 0.2);
+    }
+
+    .cta-btn-secondary {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .cta-btn-secondary:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* ════════ CONTENT SECTIONS ════════ */
+    .content-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .section-content {
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .section-content p {
+      margin-bottom: 1.2rem;
+    }
+
+    .section-content ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-content li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.8rem;
+      position: relative;
+    }
+
+    .section-content li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* ════════ EXPERTISE GRID ════════ */
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .expertise-card {
+      background: var(--primary-light);
+      border: 1px solid #D0E0F0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .expertise-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 145, 184, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .expertise-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .expertise-card h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .expertise-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ════════ TIMELINE ════════ */
+    .timeline {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 30px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary-light);
+    }
+
+    .timeline-item {
+      margin-bottom: 2rem;
+      padding-left: 100px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 16px;
+      top: 4px;
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+    }
+
+    .timeline-year {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-title {
+      font-size: 1.05rem;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ════════ FOOTER ════════ */
+    .site-footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 3rem 24px 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 3rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand h3 {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-brand p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 50%;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .social-icon:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .footer-nav h4 {
+      color: var(--primary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-nav ul {
+      list-style: none;
+    }
+
+    .footer-nav li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-nav a:hover {
+      color: var(--accent);
+    }
+
+    .footer-legal {
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      text-align: center;
+    }
+
+    .footer-legal p {
+      color: var(--text-light);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* ════════ RESPONSIVE ════════ */
+    @media (max-width: 768px) {
+      .site-container {
+        padding: 2rem 16px;
+      }
+
+      .about-hero {
+        padding: 2rem;
+      }
+
+      .about-hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .author-card {
+        padding: 1.5rem;
+      }
+
+      .author-avatar-large {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+      }
+
+      .author-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .cta-btn {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.9rem;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+      }
+
+      .expertise-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-inner {
+        padding: 0 16px;
+        gap: 1rem;
+      }
+
+      .logo {
+        font-size: 1rem;
+      }
+
+      .nav {
+        gap: 1.2rem;
+        font-size: 0.85rem;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline::before {
+        left: 22px;
+      }
+
+      .timeline-item::before {
+        left: 9px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .timeline-item {
+        padding-left: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-inner {
+        flex-wrap: wrap;
+      }
+
+      .nav {
+        width: 100%;
+        justify-content: space-around;
+        order: 3;
+        gap: 0.5rem;
+      }
+
+      .about-hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .about-hero p {
+        font-size: 1rem;
+      }
+
+      .author-card h2 {
+        font-size: 1.4rem;
+      }
+
+      .author-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .author-ctas {
+        flex-direction: column;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      .expertise-grid {
+        gap: 1rem;
+      }
+
+      .footer-social {
+        gap: 0.75rem;
+      }
+
+      .social-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">O</div>
+        <span>OneSkill Studio</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="#">Technical</a>
+        <a href="#">Functional</a>
+        <a href="about.html" class="active">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="site-container">
+    <!-- Hero Section -->
+    <section class="about-hero">
+      <h1>About OneSkill Studio</h1>
+      <p>Expert Oracle Fusion HCM knowledge and guidance from a Solution Architect with a decade of implementation experience across global enterprises.</p>
+    </section>
+
+    <!-- Author Card -->
+    <section class="author-card">
+      <div class="author-avatar-large">VC</div>
+      <h2>Vaibhav Chavan</h2>
+      <p class="author-title">Oracle Fusion HCM Solution Architect</p>
+
+      <p class="author-bio">
+        With over 10 years of experience implementing Oracle Fusion HCM across multiple countries and industries, 
+        I've helped organizations transform their human capital management through technology, process optimization, 
+        and best practice implementation.
+      </p>
+
+      <div class="author-stats">
+        <div class="stat-item">
+          <div class="stat-number">10+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Implementations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Global Markets</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">8</div>
+          <div class="stat-label">HCM Modules</div>
+        </div>
+      </div>
+
+      <div class="author-ctas">
+        <button class="cta-btn">Connect on LinkedIn</button>
+        <button class="cta-btn cta-btn-secondary">Book a Session</button>
+        <button class="cta-btn cta-btn-secondary">Get Consulting</button>
+      </div>
+    </section>
+
+    <!-- About OneSkill Studio -->
+    <section class="content-section">
+      <h2 class="section-title">What is OneSkill Studio?</h2>
+      <div class="section-content">
+        <p>
+          OneSkill Studio is a knowledge hub dedicated to helping Oracle Fusion HCM professionals master their craft. 
+          Whether you're implementing your first HCM solution or optimizing a complex global deployment, we provide 
+          deep technical expertise and functional guidance based on real-world implementations.
+        </p>
+        <p>
+          Our mission is to bridge the gap between documentation and practical knowledge, offering solutions that work 
+          in production environments and best practices learned from hundreds of enterprise implementations.
+        </p>
+      </div>
+    </section>
+
+    <!-- Our Expertise -->
+    <section class="content-section">
+      <h2 class="section-title">Our Expertise</h2>
+      <div class="expertise-grid">
+        <div class="expertise-card">
+          <div class="expertise-icon">⚙️</div>
+          <h3>Fast Formula Development</h3>
+          <p>Master custom calculations and business logic without coding. Real-world patterns and optimization techniques.</p>
+        </div>
+
+        <div class="expertise-card">
+          <div class="expertise-icon">👥</div>
+          <h3>Core HR Configuration</h3>
+          <p>Person setup, assignments, organizational structures, and foundational HCM configuration best practices.</p>
+        </div>
+
+        <div class="expertise-card">
+          <div class="expertise-icon">💰</div>
+          <h3>Payroll & Compensation</h3>
+          <p>Payroll cycle setup, balance adjustments, compensation planning, and statutory compliance implementation.</p>
+        </div>
+
+        <div class="expertise-card">
+          <div class="expertise-icon">📊</div>
+          <h3>Data Integration</h3>
+          <p>HCM Extract, BIE development, HDL loading, and enterprise-scale data integration patterns.</p>
+        </div>
+
+        <div class="expertise-card">
+          <div class="expertise-icon">⏰</div>
+          <h3>Time & Labor Management</h3>
+          <p>Time entry rules, labor distributions, compliance, and absence management configuration.</p>
+        </div>
+
+        <div class="expertise-card">
+          <div class="expertise-icon">🎓</div>
+          <h3>Training & Knowledge Transfer</h3>
+          <p>Comprehensive training programs and documentation to empower your team for long-term success.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Journey -->
+    <section class="content-section">
+      <h2 class="section-title">My Journey</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">2013</div>
+          <div class="timeline-title">Journey Begins</div>
+          <div class="timeline-desc">Started career as Oracle HCM consultant, learning the foundations of HR technology implementation.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2015</div>
+          <div class="timeline-title">Technical Expertise</div>
+          <div class="timeline-desc">Deep dive into Fast Formula, HCM Extract, and advanced technical implementations across multiple clients.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2017</div>
+          <div class="timeline-title">Oracle Certification</div>
+          <div class="timeline-desc">Achieved Oracle HCM Cloud certification, validating expertise and knowledge across HCM modules.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2019</div>
+          <div class="timeline-title">Global Implementations</div>
+          <div class="timeline-desc">Led implementations across 6 countries, managing complex multi-locale payroll and compliance scenarios.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2021</div>
+          <div class="timeline-title">Solution Architect</div>
+          <div class="timeline-desc">Transitioned to Solution Architect role, designing enterprise HCM solutions and mentoring implementation teams.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2024</div>
+          <div class="timeline-title">Knowledge Hub Launch</div>
+          <div class="timeline-desc">Founded OneSkill Studio to share practical knowledge and help HCM professionals succeed in their implementations.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why This Blog -->
+    <section class="content-section">
+      <h2 class="section-title">Why OneSkill Studio?</h2>
+      <div class="section-content">
+        <p>
+          Over a decade in Oracle Fusion HCM, I've noticed a gap between official documentation and what actually works 
+          in production. Oracle's documentation is comprehensive but doesn't always address real-world scenarios, common pitfalls, 
+          and optimization techniques that teams discover through experience.
+        </p>
+        <ul>
+          <li><strong>Practical Expertise:</strong> Solutions based on actual implementation experience, not theory alone</li>
+          <li><strong>Real-World Scenarios:</strong> Examples and patterns from actual enterprise deployments</li>
+          <li><strong>Best Practices:</strong> Proven approaches that work across different organizations and geographies</li>
+          <li><strong>Performance Optimization:</strong> Techniques to make your HCM system faster and more efficient</li>
+          <li><strong>Problem Solving:</strong> Common issues and proven solutions to help you avoid costly mistakes</li>
+          <li><strong>Continuous Learning:</strong> Regular updates with new insights from ongoing implementations</li>
+        </ul>
+        <p>
+          OneSkill Studio exists to help you succeed faster in your Oracle Fusion HCM journey by learning from experiences 
+          across hundreds of implementations worldwide.
+        </p>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="content-section">
+      <h2 class="section-title">How Can I Help?</h2>
+      <div class="section-content">
+        <ul>
+          <li><strong>Free Blog Content:</strong> In-depth articles, guides, and tutorials on HCM topics</li>
+          <li><strong>Technical Consulting:</strong> Expert guidance for specific implementation challenges</li>
+          <li><strong>Solution Architecture:</strong> Design and strategy for new HCM deployments</li>
+          <li><strong>Team Training:</strong> Comprehensive training programs for your implementation team</li>
+          <li><strong>Digital Products:</strong> Templates, checklists, and resources for HCM projects</li>
+          <li><strong>1-on-1 Sessions:</strong> Book personalized consultation sessions for detailed guidance</li>
+        </ul>
+        <p>
+          Whether you're starting your HCM journey or optimizing an existing implementation, I'm here to help you 
+          succeed with practical expertise and proven solutions.
+        </p>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="author-card" style="margin-top: 2rem;">
+      <h2>Ready to Master Oracle Fusion HCM?</h2>
+      <p style="margin-bottom: 1.5rem; font-size: 1rem; color: var(--text-muted);">
+        Explore our comprehensive guides, get expert advice, or book a consultation session.
+      </p>
+      <div class="author-ctas">
+        <button class="cta-btn">Browse All Articles</button>
+        <button class="cta-btn cta-btn-secondary">Book Consultation</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>OneSkill Studio</h3>
+        <p>Oracle Fusion HCM expert knowledge base. Deep technical guides and functional expertise for enterprise implementations.</p>
+        <div class="footer-social">
+          <a href="#" class="social-icon" title="LinkedIn">in</a>
+          <a href="#" class="social-icon" title="YouTube">▶</a>
+          <a href="#" class="social-icon" title="Twitter">𝕏</a>
+          <a href="#" class="social-icon" title="Email">✉</a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="#">Technical Guides</a></li>
+            <li><a href="#">Functional Modules</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>More</h4>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2024 OneSkill Studio. All rights reserved.</p>
+      <p>Personal views and do not represent any employer. Oracle and product names are trademarks of Oracle Corporation.</p>
+    </div>
+  </footer>
+
+  <!-- HEADER HIDE ON SCROLL SCRIPT -->
+  <script>
+    let lastScrollTop = 0;
+    const header = document.querySelector('.site-header');
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+      if (scrollTop > 300) {
+        if (scrollTop > lastScrollTop) {
+          // Scrolling DOWN
+          header.classList.add('hide');
+        } else {
+          // Scrolling UP
+          header.classList.remove('hide');
+        }
+      } else {
+        // Near top
+        header.classList.remove('hide');
+      }
+
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+
+</body>
+</html>
