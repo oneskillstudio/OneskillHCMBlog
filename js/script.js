@@ -1,378 +1,447 @@
-/* ════════════════════════════════════════════════════════════
-   ONESKILL STUDIO - GLOBAL SCRIPTS
-   ════════════════════════════════════════════════════════════ */
+// ============================================================================
+// ONESKILL STUDIO - DYNAMIC BLOG SYSTEM
+// Loads posts from /posts/*.md files and renders dynamically
+// ============================================================================
 
-// ═══════════════════════════════════════════════════════════
-// HEADER HIDE ON SCROLL
-// ═══════════════════════════════════════════════════════════
+(function() {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-  let lastScrollTop = 0;
-  const header = document.querySelector('.site-header');
+  // =========================================================================
+  // CONFIGURATION
+  // =========================================================================
+  
+  const config = {
+    postsFolder: '/posts/',
+    postsExt: '.md',
+    featuredCount: 6,
+    recentPostsCount: 3,
+    currentPage: getCurrentPage(),
+  };
 
-  if (header) {
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  // =========================================================================
+  // UTILITIES
+  // =========================================================================
 
-      if (scrollTop > 300) {
-        if (scrollTop > lastScrollTop) {
-          // Scrolling DOWN
-          header.classList.add('hide');
-        } else {
-          // Scrolling UP
-          header.classList.remove('hide');
-        }
+  function getCurrentPage() {
+    const path = window.location.pathname;
+    if (path.includes('technical')) return 'technical';
+    if (path.includes('functional')) return 'functional';
+    if (path.includes('trainings')) return 'trainings';
+    if (path.includes('blog')) return 'blog';
+    return 'home';
+  }
+
+  // =========================================================================
+  // POST METADATA (Define all posts here)
+  // =========================================================================
+
+  const postsMetadata = [
+    {
+      file: '001-fast-formula-architecture.md',
+      title: 'Fast Formula Architecture & Design Patterns',
+      date: '2024-12-15',
+      author: 'Vaibhav Chavan',
+      category: 'Technical',
+      tags: ['Fast Formula', 'Technical', 'Oracle Fusion', 'HCM', 'Development'],
+      description: 'Master the fundamentals of Fast Formula development including types, entry points, database items, and design patterns.',
+      image: '001-fast-formula.jpg',
+      readTime: 18,
+      draft: false,
+      slug: 'fast-formula-architecture'
+    },
+    {
+      file: '002-core-hr-configuration.md',
+      title: 'Core HR Configuration & Implementation',
+      date: '2024-12-10',
+      author: 'Vaibhav Chavan',
+      category: 'Functional',
+      tags: ['Core HR', 'Configuration', 'Implementation', 'Oracle Fusion', 'HCM'],
+      description: 'Complete guide to setting up Core HR including persons, assignments, organizations, and positions.',
+      image: '002-core-hr.jpg',
+      readTime: 22,
+      draft: false,
+      slug: 'core-hr-configuration'
+    },
+    {
+      file: '003-hcm-extract-bie-guide.md',
+      title: 'HCM Extract & BIE Development Guide',
+      date: '2024-12-05',
+      author: 'Vaibhav Chavan',
+      category: 'Technical',
+      tags: ['HCM Extract', 'BIE', 'Data Integration', 'Oracle Fusion', 'Technical'],
+      description: 'Create custom HCM extracts using BIE tool for advanced reporting and data integration.',
+      image: '003-hcm-extract.jpg',
+      readTime: 20,
+      draft: false,
+      slug: 'hcm-extract-bie'
+    },
+    {
+      file: '004-time-labor-essentials.md',
+      title: 'Time & Labor Essentials: Setup & Configuration',
+      date: '2024-11-28',
+      author: 'Vaibhav Chavan',
+      category: 'Functional',
+      tags: ['Time & Labor', 'Configuration', 'Oracle Fusion', 'HCM', 'Payroll'],
+      description: 'Setup and configure Time & Labor including daily schedules, time entry rules, and labor distribution.',
+      image: '004-time-labor.jpg',
+      readTime: 19,
+      draft: false,
+      slug: 'time-labor-essentials'
+    }
+  ];
+
+  // =========================================================================
+  // POST LOADING & PARSING
+  // =========================================================================
+
+  async function loadPost(filename) {
+    try {
+      const response = await fetch(`${config.postsFolder}${filename}`);
+      if (!response.ok) throw new Error(`Failed to load ${filename}`);
+      return await response.text();
+    } catch (error) {
+      console.error('Error loading post:', error);
+      return null;
+    }
+  }
+
+  function parseMarkdownWithFrontmatter(content) {
+    // Match front matter: ---\n...metadata...\n---
+    const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+    const match = content.match(frontmatterRegex);
+
+    if (!match) {
+      return { frontmatter: {}, content: content };
+    }
+
+    const [, frontmatterStr, bodyContent] = match;
+    const frontmatter = parseFrontmatter(frontmatterStr);
+
+    return {
+      frontmatter,
+      content: bodyContent
+    };
+  }
+
+  function parseFrontmatter(str) {
+    const data = {};
+    const lines = str.split('\n');
+    
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      
+      const [key, ...valueParts] = line.split(':');
+      const keyTrim = key.trim();
+      const value = valueParts.join(':').trim();
+
+      // Parse different data types
+      if (value.startsWith('[') && value.endsWith(']')) {
+        // Array
+        data[keyTrim] = value.slice(1, -1).split(',').map(v => v.trim().replace(/"/g, ''));
+      } else if (value === 'true' || value === 'false') {
+        // Boolean
+        data[keyTrim] = value === 'true';
+      } else if (!isNaN(value) && value !== '') {
+        // Number
+        data[keyTrim] = parseInt(value);
       } else {
-        // Near top
-        header.classList.remove('hide');
+        // String
+        data[keyTrim] = value.replace(/"/g, '').replace(/'/g, '');
       }
-
-      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    });
-  }
-});
-
-// ═══════════════════════════════════════════════════════════
-// SET ACTIVE NAV LINK
-// ═══════════════════════════════════════════════════════════
-
-document.addEventListener('DOMContentLoaded', () => {
-  const currentLocation = location.pathname;
-  const navLinks = document.querySelectorAll('.nav a');
-
-  navLinks.forEach(link => {
-    if (link.getAttribute('href') === currentLocation ||
-        link.getAttribute('href') === currentLocation + 'index.html') {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
     }
-  });
-});
 
-// ═══════════════════════════════════════════════════════════
-// SEARCH FUNCTIONALITY
-// ═══════════════════════════════════════════════════════════
-
-document.addEventListener('DOMContentLoaded', () => {
-  const searchForm = document.querySelector('.search-form');
-
-  if (searchForm) {
-    searchForm.addEventListener('submit', (e) => {
-      const searchInput = searchForm.querySelector('input[type="text"]');
-      if (searchInput && searchInput.value.trim() === '') {
-        e.preventDefault();
-        searchInput.focus();
-      }
-    });
+    return data;
   }
-});
 
-// ═══════════════════════════════════════════════════════════
-// SMOOTH SCROLL FOR INTERNAL LINKS
-// ═══════════════════════════════════════════════════════════
+  // =========================================================================
+  // MARKDOWN TO HTML CONVERSION
+  // =========================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  const links = document.querySelectorAll('a[href^="#"]');
+  function markdownToHtml(markdown) {
+    let html = markdown;
 
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      if (href === '#') return;
+    // Headers
+    html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
 
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+    // Italic
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+
+    // Links
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+    // Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+    // Inline code
+    html = html.replace(/`([^`]*)`/g, '<code>$1</code>');
+
+    // Blockquote
+    html = html.replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>');
+
+    // Line breaks
+    html = html.split('\n\n').map(paragraph => {
+      if (paragraph.startsWith('<') || paragraph.startsWith('|')) {
+        return paragraph;
       }
+      return `<p>${paragraph}</p>`;
+    }).join('\n');
+
+    // Unordered lists
+    html = html.replace(/^\* (.*?)$/gm, '<li>$1</li>');
+    html = html.replace(/(\<li\>.*?\<\/li\>)/s, '<ul>$1</ul>');
+
+    // Ordered lists
+    html = html.replace(/^\d+\. (.*?)$/gm, '<li>$1</li>');
+
+    // Tables (basic support)
+    html = html.replace(/^\|.*\|$/gm, (match) => {
+      const rows = match.split('\n').filter(r => r.trim());
+      const tableHtml = rows.map(row => {
+        const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+        return `<tr>${cells}</tr>`;
+      }).join('');
+      return `<table><tr>${rows[0]}</tr></table>`;
     });
-  });
-});
 
-// ═══════════════════════════════════════════════════════════
-// TABLE OF CONTENTS AUTO-GENERATION (For Blog Posts)
-// ═══════════════════════════════════════════════════════════
-
-document.addEventListener('DOMContentLoaded', () => {
-  const tocContainer = document.querySelector('.table-of-contents');
-
-  if (tocContainer) {
-    const postContent = document.querySelector('.post-content');
-    if (postContent) {
-      const headings = postContent.querySelectorAll('h2, h3');
-      const toc = document.createElement('ol');
-
-      headings.forEach((heading, index) => {
-        // Add ID if not present
-        if (!heading.id) {
-          heading.id = `heading-${index}`;
-        }
-
-        const li = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.textContent = heading.textContent;
-
-        // Add indentation for h3
-        if (heading.tagName === 'H3') {
-          li.style.marginLeft = '2rem';
-        }
-
-        li.appendChild(link);
-        toc.appendChild(li);
-      });
-
-      tocContainer.appendChild(toc);
-    }
+    return html;
   }
-});
 
-// ═══════════════════════════════════════════════════════════
-// CODE BLOCK COPY FUNCTIONALITY
-// ═══════════════════════════════════════════════════════════
+  // =========================================================================
+  // RENDER FUNCTIONS
+  // =========================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  const codeBlocks = document.querySelectorAll('.post-content pre');
-
-  codeBlocks.forEach((block, index) => {
-    // Create copy button
-    const button = document.createElement('button');
-    button.className = 'copy-button';
-    button.innerHTML = '📋 Copy';
-    button.style.cssText = `
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 0.5rem 1rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
+  function renderFeaturedPost(post, metadata) {
+    return `
+      <article class="featured-card">
+        <div class="featured-image">
+          <img src="images/featured/${metadata.image}" alt="${metadata.title}" 
+               onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📘%3C/text%3E%3C/svg%3E'">
+        </div>
+        <div class="featured-content">
+          <span class="featured-category">${metadata.category}</span>
+          <h3><a href="blog-detail.html?slug=${metadata.slug}">${metadata.title}</a></h3>
+          <p>${metadata.description}</p>
+          <div class="featured-meta">
+            <span>${formatDate(metadata.date)}</span>
+            <span>${metadata.readTime} min read</span>
+            <a href="blog-detail.html?slug=${metadata.slug}" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
     `;
+  }
 
-    // Wrap pre in relative container
-    block.style.position = 'relative';
-    block.parentNode.insertBefore(button, block.nextSibling);
-    block.parentNode.style.position = 'relative';
-    block.parentNode.insertBefore(button, block.nextSibling);
+  function renderPostCard(post, metadata) {
+    return `
+      <div class="blog-post-card">
+        <h3><a href="blog-detail.html?slug=${metadata.slug}">${metadata.title}</a></h3>
+        <div class="post-meta">
+          <span>${formatDate(metadata.date)}</span>
+          <span>${metadata.readTime} min</span>
+          <span class="badge">${metadata.category}</span>
+        </div>
+        <p>${metadata.description}</p>
+        <a href="blog-detail.html?slug=${metadata.slug}" class="read-more">Read More →</a>
+      </div>
+    `;
+  }
 
-    // Add click event
-    button.addEventListener('click', () => {
-      const text = block.textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        button.innerHTML = '✓ Copied!';
-        setTimeout(() => {
-          button.innerHTML = '📋 Copy';
-        }, 2000);
-      });
-    });
-  });
-});
+  function renderRecentPostItem(metadata) {
+    return `
+      <div class="recent-post-item">
+        <a href="blog-detail.html?slug=${metadata.slug}">${metadata.title}</a>
+        <span class="recent-post-date">${formatDate(metadata.date)}</span>
+      </div>
+    `;
+  }
 
-// ═══════════════════════════════════════════════════════════
-// LAZY LOADING FOR IMAGES
-// ═══════════════════════════════════════════════════════════
+  // =========================================================================
+  // FILTER & SORT FUNCTIONS
+  // =========================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  const images = document.querySelectorAll('img[data-src]');
+  function getPostsByCategory(category) {
+    return postsMetadata.filter(post => post.category === category && !post.draft);
+  }
 
-  if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.removeAttribute('data-src');
-          imageObserver.unobserve(img);
-        }
-      });
-    });
-
-    images.forEach(img => imageObserver.observe(img));
-  } else {
-    // Fallback for older browsers
-    images.forEach(img => {
-      img.src = img.dataset.src;
-      img.removeAttribute('data-src');
+  function getAllPosts() {
+    return postsMetadata.filter(post => !post.draft).sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
     });
   }
-});
 
-// ═══════════════════════════════════════════════════════════
-// ANALYTICS TRACKING (Optional - Replace with your analytics)
-// ═══════════════════════════════════════════════════════════
-
-function trackPageView(pageName) {
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'page_view', {
-      'page_title': document.title,
-      'page_path': window.location.pathname
-    });
+  function getFeaturedPosts(count = config.featuredCount) {
+    return getAllPosts().slice(0, count);
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  trackPageView(document.title);
-});
-
-// ═══════════════════════════════════════════════════════════
-// READING TIME ESTIMATOR
-// ═══════════════════════════════════════════════════════════
-
-function calculateReadingTime(text) {
-  const wordsPerMinute = 200;
-  const wordCount = text.split(/\s+/).length;
-  const readingTime = Math.ceil(wordCount / wordsPerMinute);
-  return readingTime;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const postContent = document.querySelector('.post-content');
-  const readingTimeEl = document.querySelector('[data-reading-time]');
-
-  if (postContent && readingTimeEl) {
-    const readingTime = calculateReadingTime(postContent.textContent);
-    readingTimeEl.textContent = `${readingTime} min read`;
+  function getRecentPosts(count = config.recentPostsCount) {
+    return getAllPosts().slice(0, count);
   }
-});
 
-// ═══════════════════════════════════════════════════════════
-// RELATED POSTS WIDGET
-// ═══════════════════════════════════════════════════════════
+  // =========================================================================
+  // PAGE RENDERING
+  // =========================================================================
 
-function getRelatedPosts(currentPostTags, allPosts) {
-  // Filter posts that share tags with current post
-  return allPosts.filter(post => {
-    return post.tags.some(tag => currentPostTags.includes(tag));
-  }).slice(0, 3);
-}
+  function renderFeaturedSection() {
+    const container = document.querySelector('[data-featured-posts]');
+    if (!container) return;
 
-// ═══════════════════════════════════════════════════════════
-// FORM VALIDATION
-// ═══════════════════════════════════════════════════════════
+    const featured = getFeaturedPosts();
+    container.innerHTML = featured.map(post => renderFeaturedPost(null, post)).join('');
+  }
 
-function validateForm(formElement) {
-  const requiredFields = formElement.querySelectorAll('[required]');
-  let isValid = true;
+  function renderRecentPostsSidebar() {
+    const container = document.querySelector('[data-recent-posts]');
+    if (!container) return;
 
-  requiredFields.forEach(field => {
-    if (field.value.trim() === '') {
-      field.style.borderColor = 'red';
-      isValid = false;
-    } else {
-      field.style.borderColor = '';
+    const recent = getRecentPosts();
+    container.innerHTML = recent.map(post => renderRecentPostItem(post)).join('');
+  }
+
+  function renderCategoryPage(category) {
+    const container = document.querySelector('[data-category-posts]');
+    if (!container) return;
+
+    const posts = getPostsByCategory(category);
+    container.innerHTML = posts.length > 0 
+      ? posts.map(post => renderPostCard(null, post)).join('')
+      : '<p>No posts in this category yet.</p>';
+  }
+
+  function renderBlogPage() {
+    const container = document.querySelector('[data-all-posts]');
+    if (!container) return;
+
+    const posts = getAllPosts();
+    container.innerHTML = posts.map(post => renderPostCard(null, post)).join('');
+  }
+
+  function renderPostDetail() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+    
+    if (!slug) {
+      window.location.href = 'blog.html';
+      return;
     }
+
+    const metadata = postsMetadata.find(p => p.slug === slug);
+    if (!metadata) {
+      document.body.innerHTML = '<h1>Post not found</h1>';
+      return;
+    }
+
+    // Populate post detail page
+    document.querySelector('[data-post-title]').textContent = metadata.title;
+    document.querySelector('[data-post-date]').textContent = formatDate(metadata.date);
+    document.querySelector('[data-post-author]').textContent = metadata.author;
+    document.querySelector('[data-post-category]').textContent = metadata.category;
+    document.querySelector('[data-post-readtime]').textContent = metadata.readTime;
+    document.querySelector('[data-post-description]').textContent = metadata.description;
+  }
+
+  // =========================================================================
+  // UTILITY FUNCTIONS
+  // =========================================================================
+
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  // =========================================================================
+  // INITIALIZATION
+  // =========================================================================
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Render featured posts on home page
+    if (config.currentPage === 'home') {
+      renderFeaturedSection();
+      renderRecentPostsSidebar();
+    }
+
+    // Render category pages
+    if (config.currentPage === 'technical') {
+      renderCategoryPage('Technical');
+      renderRecentPostsSidebar();
+    }
+    if (config.currentPage === 'functional') {
+      renderCategoryPage('Functional');
+      renderRecentPostsSidebar();
+    }
+    if (config.currentPage === 'trainings') {
+      renderCategoryPage('Training');
+      renderRecentPostsSidebar();
+    }
+
+    // Render all posts page
+    if (config.currentPage === 'blog') {
+      renderBlogPage();
+      renderRecentPostsSidebar();
+    }
+
+    // Hide on scroll header
+    setupHeaderScroll();
+    
+    // Active nav link
+    setActiveNavLink();
   });
 
-  return isValid;
-}
+  function setupHeaderScroll() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
 
-// ═══════════════════════════════════════════════════════════
-// COMMENT FORM (If enabled)
-// ═══════════════════════════════════════════════════════════
+    let scrollTimeout;
+    let lastScrollY = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const commentForm = document.querySelector('.comment-form');
+    window.addEventListener('scroll', function() {
+      const scrollY = window.scrollY;
 
-  if (commentForm) {
-    commentForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      if (!validateForm(commentForm)) {
-        alert('Please fill in all required fields');
-        return;
+      if (scrollY > 300) {
+        if (scrollY < lastScrollY) {
+          header.style.transform = 'translateY(0)';
+        } else {
+          header.style.transform = 'translateY(-100%)';
+        }
       }
 
-      // Send form data
-      const formData = new FormData(commentForm);
-      fetch('/api/comments', {
-        method: 'POST',
-        body: formData
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Comment submitted successfully!');
-            commentForm.reset();
-          } else {
-            alert('Error submitting comment. Please try again.');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error submitting comment. Please try again.');
-        });
+      lastScrollY = scrollY;
     });
   }
-});
 
-// ═══════════════════════════════════════════════════════════
-// DARK MODE TOGGLE (Optional)
-// ═══════════════════════════════════════════════════════════
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Check if user previously enabled dark mode
-  const darkMode = localStorage.getItem('darkMode') === 'true';
-  if (darkMode) {
-    document.body.classList.add('dark-mode');
+  function setActiveNavLink() {
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav a').forEach(link => {
+      const href = link.getAttribute('href');
+      if (currentPath.includes(href) || (href === 'index.html' && currentPath === '/')) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
   }
 
-  // Set up dark mode toggle button (if it exists)
-  const darkModeToggle = document.querySelector('[data-toggle-dark-mode]');
-  if (darkModeToggle) {
-    darkModeToggle.addEventListener('click', toggleDarkMode);
-  }
-});
+  // =========================================================================
+  // EXPORT TO WINDOW
+  // =========================================================================
 
-// ═══════════════════════════════════════════════════════════
-// UTILITY FUNCTIONS
-// ═══════════════════════════════════════════════════════════
+  window.OneSkillStudio = {
+    posts: postsMetadata,
+    getPostsByCategory,
+    getAllPosts,
+    getFeaturedPosts,
+    getRecentPosts,
+    formatDate,
+    loadPost,
+    parseMarkdownWithFrontmatter,
+    markdownToHtml,
+  };
 
-// Format date
-function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString('en-US', options);
-}
-
-// Truncate text
-function truncateText(text, maxLength) {
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength) + '...';
-  }
-  return text;
-}
-
-// Get URL parameters
-function getUrlParameter(name) {
-  const url = new URLSearchParams(window.location.search);
-  return url.get(name);
-}
-
-// Scroll to top
-function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-}
-
-// Export functions for use in other scripts
-window.OneSkillStudio = {
-  formatDate,
-  truncateText,
-  getUrlParameter,
-  scrollToTop,
-  calculateReadingTime,
-  validateForm
-};
+})();
