@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
-  <!-- HEADER -->
+ 
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="logo">
@@ -17,76 +17,53 @@
       </a>
       <nav class="nav">
         <a href="index.html">Home</a>
-        <a href="technical.html" class="active">Technical</a>
+        <a href="functional.html" class="active">Functional</a>
         <a href="functional.html">Functional</a>
         <a href="trainings.html">Trainings</a>
         <a href="about.html">About</a>
       </nav>
     </div>
   </header>
-
+ 
   <div class="site-wrapper">
     <main>
-      <h1>⚙️ Technical Articles</h1>
-      <p>Deep-dive technical guides for Oracle Fusion HCM development.</p>
-
-      <div class="featured-posts">
-        <!-- Fast Formula -->
-        <article class="featured-card">
-          <div class="featured-image">
-            <img src="images/featured/001-fast-formula.jpg" alt="Fast Formula" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📘%3C/text%3E%3C/svg%3E'">
-          </div>
-          <div class="featured-content">
-            <span class="featured-category">Technical</span>
-            <h3>Fast Formula Architecture & Design Patterns</h3>
-            <p>Master the fundamentals of Fast Formula development including types, entry points, and design patterns.</p>
-            <div class="featured-meta">
-              <span>Dec 15, 2024</span>
-              <a href="blog-001.html" class="read-more">Read →</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- HCM Extract -->
-        <article class="featured-card">
-          <div class="featured-image">
-            <img src="images/featured/003-hcm-extract.jpg" alt="HCM Extract" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E💰%3C/text%3E%3C/svg%3E'">
-          </div>
-          <div class="featured-content">
-            <span class="featured-category">Technical</span>
-            <h3>HCM Extract & BIE Development Guide</h3>
-            <p>Create custom HCM extracts using BIE tool for advanced reporting and data integration.</p>
-            <div class="featured-meta">
-              <span>Dec 5, 2024</span>
-              <a href="blog-003.html" class="read-more">Read →</a>
-            </div>
-          </div>
-        </article>
+      <h1>👥 Functional Articles</h1>
+      <p>Functional configuration and implementation guides...</p>
+      
+      <div class="blog-posts" data-category-posts>
+        <div class="loading">Loading technical articles...</div>
       </div>
     </main>
-
+ 
     <aside class="sidebar">
       <div class="sidebar-box">
         <h3>Categories</h3>
         <div class="category-links">
-          <a href="technical.html" class="category-link active">⚙️ Technical (2)</a>
-          <a href="functional.html" class="category-link">👥 Functional (2)</a>
-          <a href="trainings.html" class="category-link">🎓 Trainings (0)</a>
-          <a href="blog.html" class="category-link">📚 All Posts (4)</a>
+          <a href="functional.html" class="category-link active">👥 Functional</a>
+          <a href="functional.html" class="category-link">👥 Functional</a>
+          <a href="trainings.html" class="category-link">🎓 Trainings</a>
+          <a href="blog.html" class="category-link">📚 All Articles</a>
+        </div>
+      </div>
+ 
+      <div class="sidebar-box">
+        <h3>Latest Articles</h3>
+        <div class="recent-posts" data-recent-posts>
+          <div class="loading">Loading...</div>
         </div>
       </div>
     </aside>
   </div>
-
+ 
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
         <h3>OneSkill Studio</h3>
         <p>Oracle Fusion HCM expert knowledge base.</p>
         <div class="footer-social">
-          <a href="https://linkedin.com/in/vaibhav-chavan" target="_blank" class="social-icon">in</a>
-          <a href="https://twitter.com/oneskill" target="_blank" class="social-icon">𝕏</a>
-          <a href="mailto:vaibhav@oneskillstudio.com" class="social-icon">✉</a>
+          <a href="https://linkedin.com" target="_blank" class="social-icon">in</a>
+          <a href="https://twitter.com" target="_blank" class="social-icon">𝕏</a>
+          <a href="mailto:contact@oneskillstudio.com" class="social-icon">✉</a>
         </div>
       </div>
       <div class="footer-nav">
@@ -94,15 +71,14 @@
           <h4>Explore</h4>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="blog.html">All Posts</a></li>
+            <li><a href="blog.html">All Articles</a></li>
             <li><a href="technical.html">Technical</a></li>
-            <li><a href="functional.html">Functional</a></li>
           </ul>
         </div>
         <div>
           <h4>More</h4>
           <ul>
-            <li><a href="trainings.html">Trainings</a></li>
+            <li><a href="functional.html">Functional</a></li>
             <li><a href="about.html">About</a></li>
           </ul>
         </div>
@@ -112,7 +88,8 @@
       <p>© 2024 OneSkill Studio. All rights reserved.</p>
     </div>
   </footer>
-
-  <script src="js/script.js"></script>
+ 
+  <script src="js/script-dynamic.js"></script>
 </body>
 </html>
+ 
