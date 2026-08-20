@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fast Formula Architecture & Design Patterns - OneSkill Studio</title>
+  <meta name="description" content="Master the fundamentals of Fast Formula development including types, entry points, database items, and design patterns used in production implementations.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">O</div>
+        <span>OneSkill Studio</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="technical.html" class="active">Technical</a>
+        <a href="functional.html">Functional</a>
+        <a href="trainings.html">Trainings</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="site-wrapper">
+    <!-- LEFT: Blog Post -->
+    <main class="post-container">
+      <article class="post">
+        <!-- Post Header -->
+        <div class="post-header">
+          <h1>Fast Formula Architecture & Design Patterns: Complete Deep Dive</h1>
+          <div class="post-meta">
+            <span>📅 December 15, 2024</span>
+            <span>✍️ Vaibhav Chavan</span>
+            <span>⏱️ <span data-reading-time>18</span> min read</span>
+            <span>🏷️ Technical</span>
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-content">
+          <p>Fast Formula is a critical component of Oracle Fusion HCM that allows businesses to extend functionality without custom code development. In this comprehensive guide, we'll explore the architecture, design patterns, and best practices for implementing Fast Formulas effectively.</p>
+
+          <h2>Table of Contents</h2>
+          <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#fundamentals">Fast Formula Fundamentals</a></li>
+            <li><a href="#types">Formula Types & Entry Points</a></li>
+            <li><a href="#database-items">Database Items Access</a></li>
+            <li><a href="#design-patterns">Design Patterns</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+            <li><a href="#common-mistakes">Common Mistakes</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ul>
+
+          <h2 id="introduction">Introduction</h2>
+          <p>Fast Formula enables Oracle Fusion HCM professionals to create custom calculations without Java development. Whether you're implementing payroll calculations, absence accruals, or complex business logic, understanding Fast Formula architecture is essential.</p>
+
+          <h3>Featured Image</h3>
+          <div class="featured-image">
+            <img src="images/featured/001-fast-formula.jpg" alt="Fast Formula Architecture Diagram" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 400%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22800%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2272%22%3E📘%3C/text%3E%3Ctext x=%2250%25%22 y=%2270%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2224%22 fill=%22%23003B66%22%3EFast Formula Architecture%3C/text%3E%3C/svg%3E'">
+          </div>
+
+          <h3>Why Fast Formula Matters</h3>
+          <p>The power of Fast Formula lies in its ability to bridge the gap between business requirements and technical constraints, allowing functional experts to implement solutions without waiting for development teams.</p>
+
+          <h3>Key Characteristics</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Aspect</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Language Type</strong></td>
+                <td>Declarative scripting language</td>
+              </tr>
+              <tr>
+                <td><strong>Execution</strong></td>
+                <td>Server-side (Oracle server)</td>
+              </tr>
+              <tr>
+                <td><strong>Performance</strong></td>
+                <td>Optimized for HCM operations</td>
+              </tr>
+              <tr>
+                <td><strong>Maintenance</strong></td>
+                <td>Easy to update and maintain</td>
+              </tr>
+              <tr>
+                <td><strong>Flexibility</strong></td>
+                <td>Highly flexible and extensible</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="fundamentals">Fast Formula Fundamentals</h2>
+          <p>Fast Formula is a powerful scripting language designed specifically for Oracle Fusion HCM. It enables you to:</p>
+
+          <ul>
+            <li>Create custom calculations without Java development</li>
+            <li>Access database items through a simple, intuitive syntax</li>
+            <li>Implement complex business logic in HCM processes</li>
+            <li>Extend payroll, benefits, and core HR functionality</li>
+            <li>Improve system performance through optimized execution</li>
+          </ul>
+
+          <h2 id="types">Formula Types & Entry Points</h2>
+          <p>Fast Formula supports multiple types, each designed for specific use cases:</p>
+
+          <h3>1. Payroll Formulas</h3>
+          <p>Used in payroll cycles for custom calculations. These are the most common and powerful Fast Formula implementations.</p>
+
+          <p><strong>Example Code:</strong></p>
+          <pre><code>DECLARE
+  vBaseSalary  NUMBER
+  vAllowance   NUMBER
+  vBonus       NUMBER
+  vResult      NUMBER
+BEGIN
+  vBaseSalary := PER_PERSON_ID.BASIC_SALARY
+  vAllowance := GETDBI('EMP_ALLOWANCE', ASSIGNMENT_ID, 'ALLOWANCE_AMT')
+  vBonus := PER_PERSON_ID.ANNUAL_BONUS
+  vResult := vBaseSalary + vAllowance + vBonus
+  RETURN vResult
+END</code></pre>
+
+          <h3>2. Person Establishment</h3>
+          <p>Applied when establishing persons in the system. Used for initial calculations and validations.</p>
+
+          <h3>3. Absence Formulas</h3>
+          <p>Used in absence management for calculating entitlements, accruals, and validations.</p>
+
+          <h3>4. Benefits Formulas</h3>
+          <p>Calculate benefit eligibility, coverage amounts, and deductions.</p>
+
+          <h2 id="database-items">Database Items (DBI) Access</h2>
+          <p>Database Items are the primary method of accessing data in Fast Formula. Understanding DBI architecture is crucial for effective formula development.</p>
+
+          <h3>DBI Types</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>DBI Type</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Access Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Person DBI</td>
+                <td>Person-level data</td>
+                <td>PER_PERSON_ID</td>
+                <td>Person</td>
+              </tr>
+              <tr>
+                <td>Assignment DBI</td>
+                <td>Assignment-level data</td>
+                <td>ASG_FULL_PART_TIME</td>
+                <td>Assignment</td>
+              </tr>
+              <tr>
+                <td>Payroll DBI</td>
+                <td>Payroll-specific data</td>
+                <td>BALANCE_VALUE</td>
+                <td>Payroll</td>
+              </tr>
+              <tr>
+                <td>Custom DBI</td>
+                <td>Custom table data</td>
+                <td>CUSTOM_TABLE_NAME</td>
+                <td>Custom</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Accessing DBIs</h3>
+          <pre><code>-- Simple DBI access
+vValue := DBI_NAME.COLUMN_NAME
+
+-- GETDBI function for complex access
+vValue := GETDBI('TABLE_NAME', KEY_ID, 'COLUMN_NAME')
+
+-- Conditional access
+IF ASG_FULL_PART_TIME.VALUE = 'F' THEN
+  vResult := vValue * 1.0
+ELSE
+  vResult := vValue * 0.5
+END IF</code></pre>
+
+          <blockquote>
+            <strong>Pro Tip:</strong> Always verify DBI availability in your formula type. Not all DBIs are available in all contexts. Cache results when accessing the same DBI multiple times.
+          </blockquote>
+
+          <h2 id="design-patterns">Design Patterns</h2>
+
+          <h3>Pattern 1: Conditional Calculation</h3>
+          <pre><code>DECLARE
+  vEmployeeType   VARCHAR2(10)
+  vMultiplier     NUMBER
+  vResult         NUMBER
+BEGIN
+  vEmployeeType := PER_PERSON_ID.EMPLOYEE_TYPE
+  
+  CASE vEmployeeType
+    WHEN 'FULL_TIME' THEN
+      vMultiplier := 1.0
+    WHEN 'PART_TIME' THEN
+      vMultiplier := 0.5
+    WHEN 'CONTRACT' THEN
+      vMultiplier := 0.3
+    ELSE
+      vMultiplier := 0
+  END CASE
+  
+  vResult := SALARY * vMultiplier
+  RETURN vResult
+END</code></pre>
+
+          <h3>Pattern 2: Data Validation</h3>
+          <pre><code>DECLARE
+  vSalary         NUMBER
+  vMaxSalary      NUMBER
+BEGIN
+  vSalary := PER_PERSON_ID.BASIC_SALARY
+  vMaxSalary := 500000
+  
+  IF vSalary > vMaxSalary THEN
+    RETURN -1  -- Error code
+  ELSE
+    RETURN vSalary
+  END IF
+END</code></pre>
+
+          <h3>Pattern 3: Nested Calculations</h3>
+          <pre><code>DECLARE
+  vBaseSalary     NUMBER
+  vDA             NUMBER
+  vHRA            NUMBER
+  vGrossSalary    NUMBER
+BEGIN
+  vBaseSalary := PER_PERSON_ID.BASIC_SALARY
+  
+  -- Calculate Dearness Allowance (50% of basic)
+  vDA := vBaseSalary * 0.5
+  
+  -- Calculate House Rent Allowance (40% of basic)
+  vHRA := vBaseSalary * 0.4
+  
+  -- Calculate Gross
+  vGrossSalary := vBaseSalary + vDA + vHRA
+  
+  RETURN vGrossSalary
+END</code></pre>
+
+          <h2 id="best-practices">Best Practices</h2>
+
+          <h3>1. Optimize for Performance</h3>
+          <p>Minimize database calls and use caching when possible. Avoid calling the same DBI multiple times.</p>
+
+          <pre><code>-- BAD: Calling same DBI multiple times
+vValue1 := GETDBI('TABLE', ID, 'COL1')
+vValue2 := GETDBI('TABLE', ID, 'COL2')
+vValue3 := GETDBI('TABLE', ID, 'COL3')
+
+-- GOOD: Cache the DBI value
+vRow := GETDBI('TABLE', ID, '*')
+vValue1 := vRow.COL1
+vValue2 := vRow.COL2
+vValue3 := vRow.COL3</code></pre>
+
+          <h3>2. Handle Edge Cases</h3>
+          <p>Always validate input data and handle null values gracefully.</p>
+
+          <h3>3. Document Thoroughly</h3>
+          <p>Include comments explaining business logic, assumptions, and dependencies.</p>
+
+          <h3>4. Test Extensively</h3>
+          <p>Test with various data scenarios before deploying to production:</p>
+          <ul>
+            <li>Test with null values</li>
+            <li>Test with edge cases (minimum/maximum values)</li>
+            <li>Test with different employee types</li>
+            <li>Test with different assignment types</li>
+            <li>Test negative scenarios</li>
+          </ul>
+
+          <h2 id="common-mistakes">Common Mistakes to Avoid</h2>
+
+          <h3>❌ Mistake 1: Null Value Handling</h3>
+          <p>Not checking for null values can cause runtime errors.</p>
+
+          <pre><code>-- BAD: No null check
+vResult := vValue * 1.1  -- Crashes if vValue is null
+
+-- GOOD: Null check
+IF vValue IS NOT NULL THEN
+  vResult := vValue * 1.1
+ELSE
+  vResult := 0
+END IF</code></pre>
+
+          <h3>❌ Mistake 2: Performance Issues</h3>
+          <p>Calling DBIs in loops without caching.</p>
+
+          <h3>❌ Mistake 3: Type Mismatches</h3>
+          <p>Not validating data types before operations.</p>
+
+          <h3>❌ Mistake 4: Missing Dependencies</h3>
+          <p>Not documenting required DBIs and configurations.</p>
+
+          <h3>❌ Mistake 5: Poor Error Handling</h3>
+          <p>Not implementing proper exception handling.</p>
+
+          <h2 id="conclusion">Conclusion</h2>
+
+          <p>Fast Formula is a powerful tool for extending Oracle Fusion HCM capabilities. By understanding the architecture, following best practices, and learning from common mistakes, you can implement solutions that are both efficient and maintainable.</p>
+
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li><strong>Understand the types</strong> - Different formula types serve different purposes</li>
+            <li><strong>Master DBIs</strong> - Database items are the gateway to data access</li>
+            <li><strong>Learn patterns</strong> - Design patterns solve common problems</li>
+            <li><strong>Follow best practices</strong> - Optimization and documentation matter</li>
+            <li><strong>Test thoroughly</strong> - Comprehensive testing prevents production issues</li>
+          </ul>
+
+          <h3>Next Steps</h3>
+          <ol>
+            <li>Start with simple formulas (payroll calculations)</li>
+            <li>Gradually increase complexity</li>
+            <li>Document your implementations</li>
+            <li>Share knowledge with your team</li>
+            <li>Continuously improve and refactor</li>
+          </ol>
+
+        </div>
+
+        <!-- Post Footer -->
+        <div class="post-footer">
+          <div class="post-tags">
+            <strong>Tags:</strong>
+            <a href="technical.html" class="tag">Fast Formula</a>
+            <a href="technical.html" class="tag">Technical</a>
+            <a href="technical.html" class="tag">Oracle Fusion</a>
+            <a href="technical.html" class="tag">HCM</a>
+            <a href="technical.html" class="tag">Development</a>
+          </div>
+          <div class="post-nav">
+            <a href="blog.html" class="post-nav-btn">← Back to Blog</a>
+            <a href="blog-002.html" class="post-nav-btn">Next Post →</a>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+      <!-- Search -->
+      <div class="sidebar-box">
+        <h3>Search</h3>
+        <form class="search-form" action="blog.html" method="get">
+          <input type="text" name="q" placeholder="Search...">
+          <button type="submit">🔍</button>
+        </form>
+      </div>
+
+      <!-- Recent Posts -->
+      <div class="sidebar-box">
+        <h3>Recent Posts</h3>
+        <div class="recent-posts">
+          <div class="recent-post-item">
+            <a href="blog-001.html">Fast Formula Architecture</a>
+            <span class="recent-post-date">Dec 15, 2024</span>
+          </div>
+          <div class="recent-post-item">
+            <a href="blog-002.html">Core HR Configuration</a>
+            <span class="recent-post-date">Dec 10, 2024</span>
+          </div>
+          <div class="recent-post-item">
+            <a href="blog-003.html">HCM Extract & BIE</a>
+            <span class="recent-post-date">Dec 5, 2024</span>
+          </div>
+          <div class="recent-post-item">
+            <a href="blog-004.html">Time & Labor Essentials</a>
+            <span class="recent-post-date">Nov 28, 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Author Bio -->
+      <div class="sidebar-box author-section">
+        <div class="author-avatar">
+          <img src="images/authors/vaibhav-chavan.jpg" alt="Vaibhav Chavan" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23003B66%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2250%22 fill=%22white%22%3EVC%3C/text%3E%3C/svg%3E'">
+        </div>
+        <h4>Vaibhav Chavan</h4>
+        <p>Oracle Fusion HCM Solution Architect with 10+ years of implementation experience.</p>
+        <a href="about.html" class="author-btn">Learn More</a>
+      </div>
+
+      <!-- Categories -->
+      <div class="sidebar-box">
+        <h3>Categories</h3>
+        <div class="category-links">
+          <a href="technical.html" class="category-link">⚙️ Technical</a>
+          <a href="functional.html" class="category-link">👥 Functional</a>
+          <a href="trainings.html" class="category-link">🎓 Trainings</a>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="sidebar-box">
+        <h3>Topics</h3>
+        <div class="tags">
+          <a href="technical.html" class="tag">Fast Formula</a>
+          <a href="technical.html" class="tag">Technical</a>
+          <a href="functional.html" class="tag">Core HR</a>
+          <a href="technical.html" class="tag">HCM Extract</a>
+          <a href="functional.html" class="tag">Time & Labor</a>
+          <a href="trainings.html" class="tag">Training</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>OneSkill Studio</h3>
+        <p>Oracle Fusion HCM expert knowledge base with deep technical guides and functional expertise.</p>
+        <div class="footer-social">
+          <a href="https://linkedin.com/in/vaibhav-chavan" target="_blank" class="social-icon" title="LinkedIn">in</a>
+          <a href="https://twitter.com/oneskill" target="_blank" class="social-icon" title="Twitter">𝕏</a>
+          <a href="mailto:vaibhav@oneskillstudio.com" class="social-icon" title="Email">✉</a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">All Posts</a></li>
+            <li><a href="technical.html">Technical</a></li>
+            <li><a href="functional.html">Functional</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>More</h4>
+          <ul>
+            <li><a href="trainings.html">Trainings</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2024 OneSkill Studio. All rights reserved.</p>
+      <p>Personal views and do not represent any employer. Oracle is a trademark of Oracle Corporation.</p>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
